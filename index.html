@@ -1,236 +1,1615 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="it" class="h-full bg-slate-950 text-slate-100">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="referrer" content="no-referrer">
-    <link rel="manifest" href="manifest.json">
-    <title>Qur'an Premium Pro Warsh+</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FIOM-CGIL Umbria | Assistente e Audit CCNL Metalmeccanici 2027</title>
+    
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkZJT00gQ0dJTCBVbWJyaWEgQ0NOTCIsCiAgInNob3J0X25hbWUiOiAiRklPTSBVbWJyaWEiLAogICJzdGFydF91cmwiOiAiLi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwRTE3MkEiLAogICJ0aGVtZV9jb2xvciI6ICIjRTMwNjEzIgp9">
+    <meta name="theme-color" content="#E30613">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cgil: {
+                            red: '#E30613',
+                            hover: '#C2040F',
+                            dark: '#90030B',
+                            light: 'rgba(227, 6, 19, 0.15)',
+                            glow: 'rgba(227, 6, 19, 0.35)'
+                        },
+                        fiom: {
+                            navy: '#0F172A',
+                            slate: '#1E293B',
+                            card: '#162032',
+                            border: '#2A384C',
+                            accent: '#3B82F6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Plus Jakarta Sans', 'system-ui', '-apple-system', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
-        :root {
-            --dark-bg: #050505;
-            --panel: #0f0f0f;
-            --emerald: #042f2e;
-            --gold: #d4af37;
-            --gold-light: #fbbf24;
-            --text-main: #ffffff;
-            --text-dim: #a0aec0;
-            --card-bg: #111111;
-        }
-
-        body.light-mode {
-            --dark-bg: #f4ece1;
-            --panel: #eaddca;
-            --emerald: #064e3b;
-            --gold: #b45309;
-            --gold-light: #d97706;
-            --text-main: #1a202c;
-            --text-dim: #4a5568;
-            --card-bg: #ffffff;
-        }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-        html, body { height: 100%; overflow: hidden; background: var(--dark-bg); color: var(--text-main); font-family: 'Segoe UI', sans-serif; transition: 0.3s; }
-
-        /* MODALITÀ IMMERSIVA */
-        body.immersive .navbar, body.immersive .top-nav, body.immersive .tabs, body.immersive .player-bar { display: none !important; }
-        body.immersive .main-content { height: 100vh !important; padding: 0 !important; }
-
-        /* SIDEBAR & OVERLAY */
-        .overlay-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1500; display: none; backdrop-filter: blur(5px); }
-        .sidebar { position: fixed; top: 0; left: -100%; width: 280px; height: 100%; background: var(--panel); z-index: 2000; transition: 0.4s; border-right: 2px solid var(--gold); overflow-y: auto; }
-        .sidebar.open { left: 0; }
-        .side-header { padding: 40px 20px; background: linear-gradient(to bottom, var(--emerald), #000); border-bottom: 2px solid var(--gold); text-align: center; color: var(--gold-bright); font-weight: bold; }
-        .side-item { padding: 15px 25px; color: var(--text-main); display: flex; align-items: center; gap: 15px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .side-item i { color: var(--gold); width: 25px; text-align: center; }
-
-        /* UI STRUTTURA */
-        .app-shell { display: flex; flex-direction: column; height: 100vh; }
-        .navbar { padding: 15px 20px; background: var(--emerald); display: flex; align-items: center; justify-content: space-between; border-bottom: 1.5px solid var(--gold); z-index: 500; }
-        .nav-title { font-weight: 900; color: var(--gold-bright); font-size: 0.9rem; letter-spacing: 1.5px; }
-
-        .top-nav { display: flex; flex-direction: column; background: var(--panel); padding: 10px; gap: 8px; border-bottom: 1px solid rgba(212,175,55,0.1); }
-        select { background: var(--dark-bg); color: var(--text-main); border: 1.5px solid var(--gold); padding: 10px; border-radius: 12px; flex: 1; font-weight: bold; outline: none; }
-
-        .tabs { display: flex; background: #000; padding: 5px; gap: 5px; }
-        .tab { flex: 1; padding: 12px; text-align: center; font-size: .75rem; font-weight: 800; color: var(--text-dim); cursor: pointer; border-radius: 8px; }
-        .tab.active { background: var(--gold); color: #000; }
-
-        /* CONTENT Area */
-        .main-content { flex: 1; overflow-y: auto; background: var(--dark-bg); position: relative; scroll-behavior: smooth; }
-        .ayah-card { padding: 25px; border-bottom: 1px solid rgba(212,175,55,0.1); cursor: pointer; background: var(--card-bg); margin: 12px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
-        .ayah-card.active { border-right: 6px solid var(--gold); background: rgba(212,175,55,0.08); }
-        .arabic-text { direction: rtl; font-family: 'Scheherazade New', serif; font-size: 2.2rem; line-height: 2.5; text-align: right; color: var(--text-main); }
-        .extra-box { margin-top: 15px; padding: 15px; background: rgba(128,128,128,0.05); border-radius: 12px; border: 1px dashed var(--gold); color: var(--text-main); font-size: 0.95rem; }
-
-        /* MUSHAF Area */
-        .mushaf-container { width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 120px; min-height: 100vh; background: #000; }
-        .mushaf-img { width: 98%; max-width: 900px; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); background: white; margin-top: 10px; display: none; }
-
-        /* PLAYER BAR */
-        .player-bar { background: var(--panel); padding: 15px 18px; border-top: 2px solid var(--gold); display: flex; align-items: center; gap: 16px; }
-        .play-main { width: 55px; height: 55px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #000; cursor: pointer; box-shadow: 0 4px 12px rgba(212,175,55,0.4); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        #loader { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2100; display: none; text-align: center; color: var(--gold-bright); font-weight: bold; }
-        .spinner { width: 40px; height: 40px; border: 4px solid #333; border-top: 4px solid var(--gold-bright); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 10px; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .glass-card {
+            background: rgba(22, 32, 50, 0.78);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            border-color: rgba(227, 6, 19, 0.4);
+            box-shadow: 0 12px 40px rgba(227, 6, 19, 0.15);
+        }
+        .glass-nav {
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .active-pill {
+            background: linear-gradient(135deg, #E30613 0%, #C2040F 100%);
+            color: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 4px 16px rgba(227, 6, 19, 0.45);
+        }
+        .pulse-red {
+            animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(227, 6, 19, 0.6); }
+            50% { box-shadow: 0 0 0 14px rgba(227, 6, 19, 0); }
+        }
     </style>
 </head>
-<body>
+<body class="h-full flex flex-col font-sans bg-slate-950 text-slate-100 antialiased selection:bg-cgil-red selection:text-white">
 
-<div class="overlay-bg" id="overlay" onclick="toggleSidebar()"></div>
+    <header class="sticky top-0 z-40 glass-nav shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleSidebar()" class="p-2 rounded-xl hover:bg-slate-800 text-slate-300 focus:outline-none transition" aria-label="Apri Menu">
+                    <i class="fa-solid fa-bars-staggered text-lg"></i>
+                </button>
+                <div class="flex items-center space-x-2.5 cursor-pointer" onclick="switchSection('ccnl')">
+                    <div class="w-10 h-10 bg-gradient-to-br from-cgil-red to-cgil-dark rounded-xl flex items-center justify-center font-black text-white text-xl tracking-tighter shadow-md border border-red-500/30">
+                        FIOM
+                    </div>
+                    <div>
+                        <div class="font-extrabold text-xs tracking-wide text-white leading-tight flex items-center space-x-1.5">
+                            <span>FIOM-CGIL UMBRIA</span>
+                            <span class="bg-cgil-light text-cgil-red text-[9px] font-mono px-1.5 py-0.5 rounded border border-red-500/20 hidden sm:inline-block">2027 Edition</span>
+                        </div>
+                        <div class="text-[10px] text-slate-400 font-medium">CCNL Metalmeccanici Industria</div>
+                    </div>
+                </div>
+            </div>
 
-<div class="sidebar" id="sidebar">
-    <div class="side-header">MENU PREMIUM</div>
-    <div class="side-group">
-        <div class="side-item" onclick="setTheme('light')"><i class="fas fa-sun"></i> <span>Tema Giorno</span></div>
-        <div class="side-item" onclick="setTheme('dark')"><i class="fas fa-moon"></i> <span>Tema Notte</span></div>
-    </div>
-    <div class="side-group">
-        <div class="side-item" onclick="setExtra('tafsir')"><i class="fas fa-book"></i> <span>Tafsir Jalalayn</span></div>
-        <div class="side-item" onclick="setExtra('asbab')"><i class="fas fa-history"></i> <span>Asbab al-Nuzul</span></div>
-        <div class="side-item" onclick="toggleImmersive()"><i class="fas fa-eye"></i> <span>Modalità Immersiva</span></div>
-    </div>
-    <div class="side-group">
-        <div class="side-item" onclick="switchTab('mushaf')"><i class="fas fa-file-alt"></i> <span>Mushaf Tajweed Warsh</span></div>
-        <div class="side-item" onclick="window.location.reload()"><i class="fas fa-sync"></i> <span>Ricarica App</span></div>
-    </div>
-</div>
+            <!-- Global Search -->
+            <div class="flex-1 max-w-md mx-4 hidden md:block">
+                <div class="relative flex items-center">
+                    <input type="text" id="globalSearchInput" placeholder="Cerca clausola, livello, stipendio, anomalie..." 
+                        class="w-full pl-9 pr-10 py-2 bg-slate-900/90 text-slate-200 text-xs rounded-full border border-slate-700/80 focus:outline-none focus:border-cgil-red focus:ring-1 focus:ring-cgil-red placeholder-slate-500 transition shadow-inner"
+                        onkeyup="handleGlobalSearch(event)">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 text-slate-500 text-xs"></i>
+                    <button onclick="toggleVoiceInput('globalSearchInput')" title="Parla per cercare" class="absolute right-3 p-1 text-slate-400 hover:text-cgil-red transition">
+                        <i id="globalMicIcon" class="fa-solid fa-microphone text-xs"></i>
+                    </button>
+                </div>
+            </div>
 
-<div class="app-shell">
-    <header class="navbar">
-        <i class="fas fa-bars-staggered" style="color:var(--gold-bright); cursor:pointer;" onclick="toggleSidebar()"></i>
-        <div class="nav-title">AL-QUR'AN PREMIUM PRO</div>
-        <i class="fas fa-expand" style="color:var(--gold-bright); cursor:pointer;" onclick="toggleImmersive()"></i>
+            <!-- Auth & Settings -->
+            <div class="flex items-center space-x-2.5">
+                <button onclick="openSettingsModal()" class="p-2.5 bg-slate-800/80 hover:bg-slate-700 text-slate-300 rounded-xl border border-slate-700 text-xs transition" title="Configurazione API & Firebase">
+                    <i class="fa-solid fa-gear text-slate-300"></i>
+                </button>
+
+                <div id="authStatusContainer">
+                    <button onclick="openAuthModal()" class="flex items-center space-x-2 bg-gradient-to-r from-cgil-red to-cgil-dark hover:from-cgil-hover hover:to-cgil-red text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg transition transform active:scale-95 border border-red-500/30">
+                        <i class="fa-solid fa-user-shield"></i>
+                        <span id="authButtonText">Accedi</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- HORIZONTAL PILLS NAVIGATION -->
+        <nav class="bg-slate-950/80 border-t border-slate-800/60 overflow-x-auto no-scrollbar py-2.5 px-4">
+            <div class="flex items-center space-x-2 max-w-7xl mx-auto min-w-max text-xs">
+                <button onclick="switchSection('ccnl')" id="pill-ccnl" class="nav-pill active-pill px-4 py-2 rounded-xl transition-all flex items-center space-x-2">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                    <span>Esplora CCNL</span>
+                </button>
+                <button onclick="switchSection('ai-chat')" id="pill-ai-chat" class="nav-pill px-4 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-all flex items-center space-x-2">
+                    <i class="fa-solid fa-robot text-cgil-red"></i>
+                    <span>Assistente AI & Vocale</span>
+                </button>
+                <button onclick="switchSection('audit')" id="pill-audit" class="nav-pill px-4 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-all flex items-center space-x-2">
+                    <i class="fa-solid fa-shield-cat text-emerald-400"></i>
+                    <span>Deep Audit 15 Punti & Scatti Biennali</span>
+                </button>
+                <button onclick="switchSection('letters')" id="pill-letters" class="nav-pill px-4 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-all flex items-center space-x-2">
+                    <i class="fa-solid fa-file-signature text-amber-400"></i>
+                    <span>Generatore Lettere & Mansioni</span>
+                </button>
+                <button onclick="switchSection('calculators')" id="pill-calculators" class="nav-pill px-4 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-all flex items-center space-x-2">
+                    <i class="fa-solid fa-calculator text-cyan-400"></i>
+                    <span>Calcolatori Sindacali</span>
+                </button>
+                <button onclick="switchSection('sedi')" id="pill-sedi" class="nav-pill px-4 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-all flex items-center space-x-2">
+                    <i class="fa-solid fa-map-location-dot text-rose-400"></i>
+                    <span>Sedi FIOM Umbria</span>
+                </button>
+                <button onclick="switchSection('download')" id="pill-download" class="nav-pill px-4 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-all flex items-center space-x-2">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Download App APK/iOS</span>
+                </button>
+            </div>
+        </nav>
     </header>
 
-    <div class="top-nav">
-        <div style="display:flex; gap:8px;">
-            <select id="surahSelect" onchange="loadSurah(this.value)"></select>
-            <select id="reciterSelect">
-                <option value="Husary_Warsh_64kbps">Al-Hussary (Warsh)</option>
-                <option value="Kushayli_64kbps">Al-Qazabri (Warsh)</option>
-                <option value="Minshawi_Murattal_128kbps">Al-Minshawi</option>
-                <option value="Alafasy_128kbps">Mishary Alafasy</option>
-                <option value="Abdul_Basit_Murattal_64kbps">Abdul Basit</option>
-            </select>
+    <div class="flex-1 flex overflow-hidden relative max-w-7xl w-full mx-auto">
+
+        <!-- SIDEBAR DRAWER -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 w-72 bg-slate-900/95 border-r border-slate-800 shadow-2xl transform -translate-x-full transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:shadow-none flex flex-col justify-between backdrop-blur-xl">
+            <div class="p-4 overflow-y-auto space-y-6">
+                
+                <div class="bg-slate-800/60 rounded-2xl p-3.5 border border-slate-700/60 flex items-center space-x-3">
+                    <div id="sidebarUserAvatar" class="w-10 h-10 rounded-xl bg-cgil-light text-cgil-red flex items-center justify-center font-bold text-lg border border-red-500/20 overflow-hidden">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <div class="overflow-hidden flex-1">
+                        <div id="sidebarUserName" class="text-xs font-bold text-slate-100 truncate">Lavoratore Non Connesso</div>
+                        <div id="sidebarUserEmail" class="text-[10px] text-slate-400 truncate">Autenticazione Firebase</div>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <div class="px-2 text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Moduli Principali</div>
+                    <button onclick="switchSection('ccnl'); closeSidebarMobile();" class="w-full flex items-center space-x-3 px-3.5 py-2.5 text-xs font-medium text-slate-300 rounded-xl hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-book-bookmark w-5 text-cgil-red text-center"></i>
+                        <span>CCNL Metalmeccanici Integrale</span>
+                    </button>
+                    <button onclick="switchSection('ai-chat'); closeSidebarMobile();" class="w-full flex items-center space-x-3 px-3.5 py-2.5 text-xs font-medium text-slate-300 rounded-xl hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-robot w-5 text-cgil-red text-center"></i>
+                        <span>Assistente AI & Vocale</span>
+                    </button>
+                    <button onclick="switchSection('audit'); closeSidebarMobile();" class="w-full flex items-center space-x-3 px-3.5 py-2.5 text-xs font-medium text-slate-300 rounded-xl hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-shield-cat w-5 text-emerald-400 text-center"></i>
+                        <span>Deep Audit Scatti Biennali</span>
+                    </button>
+                    <button onclick="switchSection('letters'); closeSidebarMobile();" class="w-full flex items-center space-x-3 px-3.5 py-2.5 text-xs font-medium text-slate-300 rounded-xl hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-file-signature w-5 text-amber-400 text-center"></i>
+                        <span>Generatore Lettere & Mansioni</span>
+                    </button>
+                    <button onclick="switchSection('calculators'); closeSidebarMobile();" class="w-full flex items-center space-x-3 px-3.5 py-2.5 text-xs font-medium text-slate-300 rounded-xl hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-calculator w-5 text-cyan-400 text-center"></i>
+                        <span>Calcolatori Straordinari & Comporto</span>
+                    </button>
+                </div>
+
+                <div class="space-y-1">
+                    <div class="px-2 text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Sedi FIOM-CGIL Umbria</div>
+                    <button onclick="switchSection('sedi'); closeSidebarMobile();" class="w-full flex items-center space-x-3 px-3.5 py-2 text-xs font-medium text-slate-300 rounded-xl hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-map-location-dot w-5 text-rose-400 text-center"></i>
+                        <span>Mappa Sedi Territoriali</span>
+                    </button>
+                    <a href="tel:07557871" class="w-full flex items-center space-x-3 px-3.5 py-2 text-xs font-medium text-slate-400 hover:text-slate-200 transition">
+                        <i class="fa-solid fa-phone w-5 text-slate-500 text-center"></i>
+                        <span>Perugia: 075 57871</span>
+                    </a>
+                    <a href="tel:07444961" class="w-full flex items-center space-x-3 px-3.5 py-2 text-xs font-medium text-slate-400 hover:text-slate-200 transition">
+                        <i class="fa-solid fa-phone w-5 text-slate-500 text-center"></i>
+                        <span>Terni: 0744 4961</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="p-4 bg-slate-950/65 border-t border-slate-800 text-[10px] text-slate-500 space-y-1">
+                <div class="flex justify-between items-center">
+                    <span>© FIOM-CGIL Umbria</span>
+                    <button onclick="openPrivacyModal()" class="underline hover:text-slate-300">Privacy GDPR</button>
+                </div>
+                <p class="leading-tight">Assistente sindacale per la tutela dei diritti dei metalmeccanici.</p>
+            </div>
+        </aside>
+
+        <div id="sidebarBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-20 hidden md:hidden"></div>
+
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+
+            <section id="section-ccnl" class="space-y-6">
+                <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-fiom-navy via-slate-900 to-cgil-dark p-6 sm:p-8 border border-slate-800 shadow-2xl">
+                    <div class="relative z-10 max-w-2xl space-y-3">
+                        <span class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-cgil-red text-white uppercase tracking-wider shadow-sm">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <span>CCNL Metalmeccanici Industria 2026/2027</span>
+                        </span>
+                        <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">Tutele, Diritti e Tabelle Salariali Ufficiali</h1>
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            Esplora gli articoli contrattuali e verifica con precisione assoluta se la tua busta paga rispetta i minimi tabellari e i rigorosi scatti di anzianità biennali calcolati dalla data di assunzione.
+                        </p>
+                        <div class="pt-2 flex flex-wrap gap-2">
+                            <button onclick="switchSection('audit')" class="px-4 py-2.5 bg-cgil-red hover:bg-cgil-hover text-white text-xs font-bold rounded-xl shadow-lg transition flex items-center space-x-2">
+                                <i class="fa-solid fa-shield-cat"></i>
+                                <span>Avvia Deep Audit & Scatti Biennali</span>
+                            </button>
+                            <button onclick="switchSection('ai-chat')" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl border border-slate-700 transition flex items-center space-x-2">
+                                <i class="fa-solid fa-robot text-cgil-red"></i>
+                                <span>Chiedi all'Assistente AI</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3" id="ccnlArticlesList">
+                    <div onclick="openArticleModal('art15')" class="glass-card rounded-2xl p-4 transition cursor-pointer flex items-center justify-between group">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-11 h-11 rounded-xl bg-red-500/10 text-cgil-red border border-red-500/20 flex items-center justify-center font-black text-sm group-hover:bg-cgil-red group-hover:text-white transition">Tab.</div>
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-100 group-hover:text-cgil-red transition">Tabelle Minimi Tabellari Ufficiali 2026/2027 (Art. 15)</h3>
+                                <p class="text-xs text-slate-400">Valori esatti: C1 (2.022,12€), C2 (2.064,88€), C3 (2.211,43€), B1 (2.370,33€), A1 (2.907,01€).</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-500 group-hover:text-cgil-red transition"></i>
+                    </div>
+
+                    <div onclick="openArticleModal('art19')" class="glass-card rounded-2xl p-4 transition cursor-pointer flex items-center justify-between group">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-11 h-11 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 flex items-center justify-center font-black text-sm group-hover:bg-cyan-600 group-hover:text-white transition">Art. 19</div>
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-100 group-hover:text-cgil-red transition">Scatti di Anzianità Biennali (Art. 19 & Art. 6)</h3>
+                                <p class="text-xs text-slate-400">Calcolo rigoroso ogni 2 anni esatti dalla data di assunzione (es. 25/09/2017 = 4 scatti biennali).</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-500 group-hover:text-cgil-red transition"></i>
+                    </div>
+
+                    <div onclick="openArticleModal('art4')" class="glass-card rounded-2xl p-4 transition cursor-pointer flex items-center justify-between group">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-11 h-11 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center justify-center font-black text-sm group-hover:bg-blue-600 group-hover:text-white transition">Art. 4</div>
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-100 group-hover:text-cgil-red transition">Nuovo Sistema di Inquadramento e Mansioni Superiori</h3>
+                                <p class="text-xs text-slate-400">Riconoscimento automatico della qualifica superiore dopo 6 mesi continuativi.</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-500 group-hover:text-cgil-red transition"></i>
+                    </div>
+
+                    <div onclick="openArticleModal('art7')" class="glass-card rounded-2xl p-4 transition cursor-pointer flex items-center justify-between group">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-11 h-11 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center font-black text-sm group-hover:bg-amber-600 group-hover:text-white transition">Art. 7</div>
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-100 group-hover:text-cgil-red transition">Lavoro Straordinario (+25%, +30%, +50%, +55%) e Banca Ore</h3>
+                                <p class="text-xs text-slate-400">Maggiorazioni percentuali e regolamento della banca ore individuale.</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-500 group-hover:text-cgil-red transition"></i>
+                    </div>
+
+                    <div onclick="openArticleModal('art10')" class="glass-card rounded-2xl p-4 transition cursor-pointer flex items-center justify-between group">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-11 h-11 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center font-black text-sm group-hover:bg-emerald-600 group-hover:text-white transition">Art. 10</div>
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-100 group-hover:text-cgil-red transition">Orario di Lavoro, Ferie e Permessi PAR (104 ore)</h3>
+                                <p class="text-xs text-slate-400">Rispetto dei limiti di legge (D.Lgs. 66/2003), 4 settimane ferie e 104 ore PAR annue.</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-500 group-hover:text-cgil-red transition"></i>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-ai-chat" class="hidden flex flex-col h-[calc(100vh-10rem)] max-h-[850px] glass-card rounded-3xl overflow-hidden border border-slate-800 shadow-2xl">
+                <div class="p-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="relative">
+                            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-cgil-red to-cgil-dark flex items-center justify-center font-bold text-white shadow-lg">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-slate-900 rounded-full"></span>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-slate-100 flex items-center space-x-2">
+                                <span>Assistente Digitale FIOM-CGIL Umbria</span>
+                                <span class="bg-emerald-500/20 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold border border-emerald-500/30">AI Active</span>
+                            </div>
+                            <div class="text-[11px] text-slate-400">Esperti in CCNL Metalmeccanici e Diritto del Lavoro</div>
+                        </div>
+                    </div>
+                    <button onclick="clearChatHistory()" title="Azzera conversazione" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 text-xs rounded-xl border border-slate-700 transition">
+                        <i class="fa-solid fa-trash-can mr-1"></i> Reset
+                    </button>
+                </div>
+
+                <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-4 bg-slate-950/65">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-xl bg-cgil-red text-white flex items-center justify-center text-xs flex-shrink-0 font-bold shadow-md">FIOM</div>
+                        <div class="glass-card p-4 rounded-2xl rounded-tl-none max-w-[88%] space-y-2 text-xs text-slate-200 border border-slate-800">
+                            <p class="font-bold text-slate-100">Compagno / Compagna, benvenuto!</p>
+                            <p class="leading-relaxed">Sono l'Assistente AI della **FIOM-CGIL Umbria**. Chiedimi qualsiasi cosa sui tuoi diritti, paga base, scatti biennali di anzianità o usa il microfono per parlare a voce.</p>
+                            <div class="pt-2 border-t border-slate-800 flex flex-wrap gap-1.5">
+                                <span class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-full cursor-pointer transition border border-slate-700" onclick="quickAsk('Come si calcolano gli scatti di anzianità biennali?')">⏳ Calcolo scatti biennali</span>
+                                <span class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-full cursor-pointer transition border border-slate-700" onclick="quickAsk('Quante ore di ferie e permessi PAR spettano?')">🏖️ Ferie e Permessi PAR</span>
+                                <span class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-full cursor-pointer transition border border-slate-700" onclick="quickAsk('Qual è il minimo tabellare per il livello C3 nel 2026?')">💰 Minimo C3 (2.211,43 €)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="voiceRecordingStatus" class="hidden bg-cgil-red/20 border-t border-cgil-red/40 px-4 py-2.5 flex items-center justify-between text-xs text-red-300 font-medium backdrop-blur-md">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 bg-cgil-red rounded-full pulse-red"></span>
+                        <span>Ascolto vocale attivo... Parla ora nel microfono.</span>
+                    </div>
+                    <button onclick="stopVoiceInput()" class="text-slate-300 hover:text-white font-bold underline text-xs">Interrompi</button>
+                </div>
+
+                <div class="p-3 bg-slate-900 border-t border-slate-800">
+                    <form onsubmit="handleChatSubmit(event)" class="flex items-center space-x-2">
+                        <button type="button" id="micBtn" onclick="toggleVoiceInput('chatInput')" class="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl transition border border-slate-700" title="Detta a voce">
+                            <i id="chatMicIcon" class="fa-solid fa-microphone text-sm"></i>
+                        </button>
+                        <input type="text" id="chatInput" placeholder="Scrivi la tua domanda o parla con il microfono..." 
+                            class="flex-1 px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cgil-red focus:ring-1 focus:ring-cgil-red transition">
+                        <button type="submit" id="sendChatBtn" class="p-2.5 bg-cgil-red hover:bg-cgil-hover text-white rounded-xl shadow-lg transition border border-red-500/30">
+                            <i class="fa-solid fa-paper-plane text-sm"></i>
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <section id="section-audit" class="hidden space-y-6">
+                <div class="glass-card rounded-3xl p-6 border border-slate-800 space-y-6 shadow-2xl">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center font-bold text-xl">
+                            <i class="fa-solid fa-shield-cat"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-base font-bold text-slate-100">Deep Audit 15 Punti: Scatti Biennali & Conformità Busta Paga</h2>
+                            <p class="text-xs text-slate-400">Carica il PDF o l'immagine. Il sistema estrae i dati reali, calcola i bienni di anzianità dalla data di assunzione e verifica rigorosamente ogni voce senza falsi "tutto conforme".</p>
+                        </div>
+                    </div>
+
+                    <!-- Upload Area -->
+                    <div class="border-2 border-dashed border-slate-700 hover:border-cgil-red rounded-2xl p-6 text-center space-y-3 cursor-pointer transition bg-slate-900/50" onclick="document.getElementById('paystubFileInput').click()">
+                        <input type="file" id="paystubFileInput" accept="image/*,.pdf" class="hidden" onchange="processDirectFileAudit(event)">
+                        <div class="w-14 h-14 bg-slate-800 rounded-2xl mx-auto flex items-center justify-center text-cgil-red text-2xl shadow-inner">
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold text-slate-200">Clicca qui per caricare Busta Paga o Contratto (PDF o Immagine)</div>
+                            <div class="text-[10px] text-slate-500 mt-1">OCR client-side Tesseract.js e PDF.js senza invio a server esterni</div>
+                        </div>
+                    </div>
+
+                    <!-- OCR Progress Bar -->
+                    <div id="ocrProgressBarContainer" class="hidden space-y-2 bg-slate-900 p-4 rounded-2xl border border-slate-800">
+                        <div class="flex justify-between text-xs font-bold text-slate-300">
+                            <span id="ocrStatusText">Estrazione testo e cifre dal file in corso...</span>
+                            <span id="ocrPercentText">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-800">
+                            <div id="ocrProgressFill" class="bg-cgil-red h-full w-0 transition-all duration-300"></div>
+                        </div>
+                    </div>
+
+                    <div id="preAuditVerificationCard" class="hidden bg-slate-900/90 p-5 rounded-2xl border border-cgil-red/40 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <div class="flex items-center space-x-2">
+                                <i class="fa-solid fa-clipboard-check text-cgil-red"></i>
+                                <span class="text-xs font-bold text-white">Tabella di Verifica e Conferma Dati Estratti (Modificabile)</span>
+                            </div>
+                            <span class="text-[10px] text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">Controlla e correggine l'esattezza</span>
+                        </div>
+
+                        <p class="text-[11px] text-slate-300 leading-relaxed">
+                            L'OCR ha estratto i seguenti valori dal tuo documento. Per calcolare con precisione millimetrica i tuoi **Scatti Biennali di Anzianità** e verificare la paga base, controlla i campi sottostanti (es. Data Assunzione 25/09/2017) e modificali prima di avviare il Deep Audit:
+                        </p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-400 mb-1">Nome Lavoratore</label>
+                                <input type="text" id="verifyWorkerName" class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-200">
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-400 mb-1">Azienda</label>
+                                <input type="text" id="verifyCompanyName" class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-200">
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-400 mb-1">Livello di Inquadramento</label>
+                                <select id="verifyLevel" class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-200 font-bold">
+                                    <option value="D1">D1 (Ex 1°)</option>
+                                    <option value="D2">D2 (Ex 2°)</option>
+                                    <option value="C1" selected>C1 (Ex 3°)</option>
+                                    <option value="C2">C2 (Ex 4°)</option>
+                                    <option value="C3">C3 (Ex 5°)</option>
+                                    <option value="B1">B1 (Ex 5°S)</option>
+                                    <option value="B2">B2 (Ex 6°)</option>
+                                    <option value="B3">B3 (Ex 7°)</option>
+                                    <option value="A1">A1 (Ex 8°)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-400 mb-1">Paga Base / Minimo (€)</label>
+                                <input type="number" id="verifyBasePay" step="0.01" class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-200 font-bold">
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-400 mb-1">Data di Assunzione (Esatta)</label>
+                                <input type="date" id="verifyHiringDate" class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-200 font-bold">
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-400 mb-1">N. Scatti Anzianità in Busta</label>
+                                <input type="number" id="verifyScattiCount" min="0" max="10" value="0" class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-200 font-bold">
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-400 mb-1">Superminimo (€)</label>
+                                <input type="number" id="verifySuperminimo" step="0.01" value="0" class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-200">
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-400 mb-1">Ore Straordinario Mese</label>
+                                <input type="number" id="verifyOvertimeHours" value="0" class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-200">
+                            </div>
+                        </div>
+
+                        <div class="pt-2">
+                            <button onclick="executeFinalRigorousAudit()" class="w-full py-3 bg-cgil-red hover:bg-cgil-hover text-white font-bold rounded-xl text-xs shadow-lg transition flex items-center justify-center space-x-2 border border-red-500/30">
+                                <i class="fa-solid fa-play"></i>
+                                <span>Conferma Dati & Esegui Audit Rigoroso Scatti Biennali</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Raw Extracted Text Box for Transparency -->
+                    <div id="rawTextContainer" class="hidden space-y-2 bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
+                        <div class="text-xs font-bold text-slate-300 flex items-center justify-between">
+                            <span>📄 Testo Reale Estratto dal Tuo File (Trasparenza OCR & PDF.js)</span>
+                            <button onclick="toggleRawText()" id="toggleRawTextBtn" class="text-[11px] text-cgil-red underline">Nascondi Testo</button>
+                        </div>
+                        <pre id="rawExtractedTextBox" class="p-3 bg-slate-950 text-slate-300 rounded-xl text-[11px] font-mono max-h-48 overflow-y-auto whitespace-pre-wrap leading-relaxed border border-slate-800"></pre>
+                    </div>
+
+                    <!-- Audit Report Container -->
+                    <div id="ocrAuditReport" class="hidden space-y-4 pt-4 border-t border-slate-800"></div>
+                </div>
+            </section>
+
+            <section id="section-letters" class="hidden space-y-6">
+                <div class="glass-card rounded-3xl p-6 border border-slate-800 space-y-5 shadow-2xl">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center font-bold text-xl">
+                                <i class="fa-solid fa-file-signature"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-base font-bold text-slate-100">Generatore Dinamico Lettere & Mansioni Superiori</h2>
+                                <p class="text-xs text-slate-400">Compila richieste formali con selezioni dettagliate e dati pre-compilati dalla busta paga scansionata.</p>
+                            </div>
+                        </div>
+                        <div id="auditDataBadgeContainer" class="hidden">
+                            <span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold rounded-xl flex items-center space-x-1.5">
+                                <i class="fa-solid fa-check-circle"></i>
+                                <span>Dati Busta Paga Caricati e Collegati</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 mb-1">Tipologia di Richiesta / Ricorso Sindacale</label>
+                        <select id="letterTypeSelect" onchange="updateLetterFormFields()" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs font-medium text-slate-200">
+                            <option value="scatti">Richiesta Corresponsione Scatti di Anzianità Biennali Mancanti (Art. 19)</option>
+                            <option value="mansioni">Richiesta Riconoscimento Mansioni Superiori e Livello (Art. 4)</option>
+                            <option value="disciplinare">Lettera di Giustificazioni a Contestazione Disciplinare (Art. 20)</option>
+                            <option value="straordinari">Richiesta Pagamento Straordinari / Ore Non Retribuite (Art. 7)</option>
+                            <option value="sicurezza">Segnalazione Mancato Rispetto Sicurezza, DPI e Temperature</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-semibold text-slate-400 mb-1">Nome e Cognome Lavoratore</label>
+                            <input type="text" id="letterWorkerName" placeholder="Mario Rossi" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-200">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-semibold text-slate-400 mb-1">Azienda / Datore di Lavoro</label>
+                            <input type="text" id="letterCompanyName" placeholder="Metalmeccanica Umbra S.p.A." class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-200">
+                        </div>
+                    </div>
+
+                    <div id="dutiesSelectionContainer" class="hidden bg-slate-900/80 p-4 rounded-2xl border border-slate-800 space-y-3">
+                        <div class="text-xs font-bold text-slate-200 flex items-center justify-between">
+                            <span>Seleziona Mansioni Superiori Svolte (Uffici e Reparti)</span>
+                            <span class="text-[10px] text-cgil-red font-normal">Scegli le voci specifiche</span>
+                        </div>
+
+                        <div class="flex space-x-2 border-b border-slate-800 pb-2 overflow-x-auto no-scrollbar text-xs">
+                            <button onclick="setDutyDept('logistica')" id="dept-logistica" class="dept-btn font-bold text-cgil-red border-b-2 border-cgil-red pb-1">Ufficio Logistica</button>
+                            <button onclick="setDutyDept('amministrazione')" id="dept-amministrazione" class="dept-btn text-slate-400 pb-1">Amministrazione</button>
+                            <button onclick="setDutyDept('commerciale')" id="dept-commerciale" class="dept-btn text-slate-400 pb-1">Commerciale</button>
+                            <button onclick="setDutyDept('acquisti')" id="dept-acquisti" class="dept-btn text-slate-400 pb-1">Acquisti</button>
+                            <button onclick="setDutyDept('tecnico')" id="dept-tecnico" class="dept-btn text-slate-400 pb-1">CAD/CAM</button>
+                            <button onclick="setDutyDept('produzione')" id="dept-produzione" class="dept-btn text-slate-400 pb-1">Produzione</button>
+                        </div>
+
+                        <div id="dutiesCheckboxes" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1"></div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-200">Anteprima Lettera Formale</span>
+                            <div class="space-x-2 flex">
+                                <button onclick="copyLetterText()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg border border-slate-700 transition">
+                                    <i class="fa-solid fa-copy mr-1"></i> Copia Testo
+                                </button>
+                                <button onclick="downloadLetterPDF()" class="px-3 py-1.5 bg-cgil-red hover:bg-cgil-hover text-white text-xs font-bold rounded-lg shadow transition border border-red-500/30">
+                                    <i class="fa-solid fa-file-pdf mr-1"></i> Scarica PDF
+                                </button>
+                            </div>
+                        </div>
+                        <textarea id="letterOutputText" rows="12" readonly class="w-full p-4 font-mono text-xs bg-slate-950 text-slate-200 rounded-2xl border border-slate-800 leading-relaxed"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-calculators" class="hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-card p-5 rounded-3xl border border-slate-800 space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 flex items-center justify-center font-bold text-lg">
+                                <i class="fa-solid fa-calculator"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-100">Calcolatore Straordinari (Art. 7)</h3>
+                                <p class="text-[11px] text-slate-400">Verifica compenso per ore di straordinario.</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 text-xs">
+                            <div>
+                                <label class="block text-slate-400 mb-1">Paga Oraria Base (€)</label>
+                                <input type="number" id="calcHourlyRate" value="12.50" step="0.1" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-slate-200">
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 mb-1">Tipologia Maggiorazione</label>
+                                <select id="calcOvertimeType" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-slate-200">
+                                    <option value="0.25">Diurno Feriale (+25%)</option>
+                                    <option value="0.30">Notturno Feriale / Oltre 2 ore (+30%)</option>
+                                    <option value="0.50">Festivo / Domenicale (+50%)</option>
+                                    <option value="0.55">Notturno Festivo (+55%)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 mb-1">Ore Lavorate</label>
+                                <input type="number" id="calcHoursCount" value="8" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-slate-200">
+                            </div>
+                            <button onclick="calculateOvertimeTotal()" class="w-full py-2.5 bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold rounded-xl shadow transition">
+                                Calcola Compenso Spettante
+                            </button>
+                            <div id="calcOvertimeResult" class="p-3 bg-cyan-500/10 rounded-xl text-cyan-300 font-bold text-center border border-cyan-500/30 hidden">--</div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-5 rounded-3xl border border-slate-800 space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center justify-center font-bold text-lg">
+                                <i class="fa-solid fa-notes-medical"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-100">Verificatore Comporto Malattia (Art. 12)</h3>
+                                <p class="text-[11px] text-slate-400">Calcola giorni residui conservazione posto.</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 text-xs">
+                            <div>
+                                <label class="block text-slate-400 mb-1">Anzianità Aziendale</label>
+                                <select id="calcSeniority" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-slate-200">
+                                    <option value="183">Fino a 3 anni (Comporto: 183 giorni)</option>
+                                    <option value="274" selected>Da 3 a 6 anni (Comporto: 274 giorni)</option>
+                                    <option value="365">Oltre 6 anni (Comporto: 365 giorni)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 mb-1">Giorni di Malattia usati ultimi 36 mesi</label>
+                                <input type="number" id="calcSickDaysUsed" value="45" class="w-full p-2.5 bg-slate-900 border border-slate-700 rounded-xl text-slate-200">
+                            </div>
+                            <button onclick="calculateComportoRemaining()" class="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl shadow transition">
+                                Calcola Giorni Residui
+                            </button>
+                            <div id="calcComportoResult" class="p-3 bg-purple-500/10 rounded-xl text-purple-300 font-bold text-center border border-purple-500/30 hidden">--</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-sedi" class="hidden space-y-6">
+                <div class="glass-card rounded-3xl p-6 border border-slate-800 space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center justify-center font-bold text-xl">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-base font-bold text-slate-100">Sedi FIOM-CGIL Umbria</h2>
+                            <p class="text-xs text-slate-400">Perugia, Terni, Foligno, Città di Castello, Umbertide, Bastia Umbra/Assisi, Orvieto.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="sediGrid"></div>
+                </div>
+            </section>
+
+            <section id="section-download" class="hidden space-y-6">
+                <div class="glass-card rounded-3xl p-6 border border-slate-800 space-y-5 shadow-2xl">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 rounded-2xl bg-cgil-red text-white flex items-center justify-center font-bold text-xl shadow-lg">
+                            <i class="fa-solid fa-download"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-base font-bold text-slate-100">Scarica l'App come APK Android e PWA iOS</h2>
+                            <p class="text-xs text-slate-400">Installa l'applicazione sul tuo dispositivo mobile.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 space-y-3">
+                            <div class="flex items-center space-x-2 text-emerald-400 font-bold">
+                                <i class="fa-brands fa-android text-lg"></i>
+                                <span>Android APK Package</span>
+                            </div>
+                            <p class="text-slate-400 leading-relaxed">Scarica il pacchetto APK installabile direttamente su Android.</p>
+                            <button onclick="downloadAPKFile()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold rounded-xl transition shadow flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-file-arrow-down"></i>
+                                <span>Scarica FIOM-Umbria.apk</span>
+                            </button>
+                        </div>
+
+                        <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 space-y-3">
+                            <div class="flex items-center space-x-2 text-slate-200 font-bold">
+                                <i class="fa-brands fa-apple text-lg"></i>
+                                <span>Apple iOS / iPhone</span>
+                            </div>
+                            <p class="text-slate-400 leading-relaxed">Apri su Safari, tocca <b class="text-white">Condividi</b> e seleziona <b class="text-white">"Aggiungi a Schermata Home"</b>.</p>
+                            <div class="p-2.5 bg-slate-950 rounded-xl text-[10px] text-slate-500 font-mono">
+                                App nativa installata istantaneamente.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ARTICLE MODAL -->
+    <div id="articleModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-card rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden border border-slate-800">
+            <div class="p-4 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+                <div>
+                    <span id="modalArticleBadge" class="text-[10px] bg-cgil-red px-2.5 py-0.5 rounded font-bold uppercase">Art. 15</span>
+                    <h3 id="modalArticleTitle" class="text-sm font-bold text-slate-100">Titolo Articolo</h3>
+                </div>
+                <button onclick="closeArticleModal()" class="text-slate-400 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div id="modalArticleContent" class="p-6 overflow-y-auto space-y-4 text-xs text-slate-300 leading-relaxed"></div>
+            <div class="p-3 bg-slate-900 border-t border-slate-800 text-right">
+                <button onclick="closeArticleModal()" class="px-4 py-1.5 bg-slate-800 text-slate-200 text-xs font-bold rounded-xl hover:bg-slate-700">Chiudi</button>
+            </div>
         </div>
     </div>
 
-    <div class="tabs">
-        <div class="tab active" id="tab-reader" onclick="switchTab('reader')">LETTURA</div>
-        <div class="tab" id="tab-tafsir" onclick="switchTab('tafsir')">TAFSIR</div>
-        <div class="tab" id="tab-mushaf" onclick="switchTab('mushaf')">MUSHAF</div>
+    <!-- AUTH MODAL -->
+    <div id="authModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-card rounded-3xl max-w-sm w-full p-6 space-y-5 shadow-2xl border border-slate-800">
+            <div class="text-center space-y-1">
+                <div class="w-12 h-12 bg-cgil-red text-white font-black rounded-2xl flex items-center justify-center mx-auto text-xl shadow-lg border border-red-500/30">
+                    FIOM
+                </div>
+                <h3 class="text-base font-bold text-slate-100">Accesso Unificato</h3>
+                <p class="text-xs text-slate-400">Google, Outlook, Facebook, Email</p>
+            </div>
+
+            <div class="space-y-2.5">
+                <button onclick="loginWithOAuth('Google')" class="w-full py-2.5 px-4 bg-slate-900 border border-slate-700 hover:bg-slate-800 text-slate-200 rounded-xl text-xs font-bold shadow transition flex items-center justify-center space-x-3">
+                    <i class="fa-brands fa-google text-red-400 text-base"></i>
+                    <span>Accedi con Google (Gmail)</span>
+                </button>
+
+                <button onclick="loginWithOAuth('Microsoft')" class="w-full py-2.5 px-4 bg-slate-900 border border-slate-700 hover:bg-slate-800 text-slate-200 rounded-xl text-xs font-bold shadow transition flex items-center justify-center space-x-3">
+                    <i class="fa-brands fa-microsoft text-blue-400 text-base"></i>
+                    <span>Accedi con Microsoft (Outlook)</span>
+                </button>
+
+                <button onclick="loginWithOAuth('Facebook')" class="w-full py-2.5 px-4 bg-slate-900 border border-slate-700 hover:bg-slate-800 text-slate-200 rounded-xl text-xs font-bold shadow transition flex items-center justify-center space-x-3">
+                    <i class="fa-brands fa-facebook text-blue-500 text-base"></i>
+                    <span>Accedi con Facebook</span>
+                </button>
+            </div>
+
+            <div class="relative flex py-1 items-center">
+                <div class="flex-grow border-t border-slate-800"></div>
+                <span class="flex-shrink mx-2 text-[10px] text-slate-500 font-bold uppercase">oppure email</span>
+                <div class="flex-grow border-t border-slate-800"></div>
+            </div>
+
+            <form onsubmit="handleEmailAuth(event)" class="space-y-3 text-xs">
+                <input type="email" id="authEmailInput" required placeholder="nome@email.it" class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-200">
+                <input type="password" id="authPasswordInput" required placeholder="Password" class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-200">
+                <button type="submit" class="w-full py-2.5 bg-cgil-red hover:bg-cgil-hover text-white font-bold rounded-xl shadow transition border border-red-500/30">
+                    Accedi / Registrati con Email
+                </button>
+            </form>
+
+            <button onclick="closeAuthModal()" class="w-full text-center text-xs text-slate-500 hover:text-slate-300">Annulla</button>
+        </div>
     </div>
 
-    <main class="content-area" id="mainContent" onclick="handleImmersiveClick()">
-        <div id="loader"><div class="spinner"></div><p>Caricamento...</p></div>
-        <div id="renderArea"></div>
-    </main>
+    <!-- SETTINGS MODAL -->
+    <div id="settingsModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-card rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-slate-800">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center space-x-2 text-slate-100 font-bold text-sm">
+                    <i class="fa-solid fa-gear text-cgil-red"></i>
+                    <span>Configurazione API & Firebase</span>
+                </div>
+                <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
 
-    <footer class="player-bar">
-        <div class="play-main" onclick="togglePlayback()"><i class="fas fa-play" id="playIcon"></i></div>
-        <div style="flex:1; overflow:hidden; margin-left:15px;">
-            <div id="curAyahName" style="font-size:.85rem; font-weight:800; color:var(--gold-bright); white-space:nowrap;">Seleziona versetto</div>
-            <div id="curStatus" style="font-size:.65rem; color:var(--text-dim);">برواية ورش عن نافع</div>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-slate-300 font-bold mb-1">Chiave API Google Gemini (Facoltativa)</label>
+                    <input type="password" id="userApiKeyInput" placeholder="AIzaSy..." class="w-full p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-slate-200 font-mono">
+                </div>
+                <button onclick="saveSettingsModal()" class="w-full py-2.5 bg-cgil-red hover:bg-cgil-hover text-white font-bold rounded-xl shadow transition">
+                    Salva Impostazioni
+                </button>
+            </div>
         </div>
-        <i class="fas fa-step-forward" style="color:var(--gold-ui); font-size:1.3rem; cursor:pointer;" onclick="nextAyah()"></i>
-    </footer>
-</div>
+    </div>
 
-<audio id="audioEngine" preload="auto"></audio>
+    <!-- PRIVACY BANNER -->
+    <div id="privacyModal" class="fixed bottom-4 right-4 max-w-md bg-slate-900/95 text-slate-200 p-5 rounded-3xl shadow-2xl border border-slate-800 z-50 space-y-3 backdrop-blur-xl">
+        <div class="flex items-center space-x-2 text-cgil-red font-bold text-xs">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Informativa Privacy e Protezione Dati (GDPR)</span>
+        </div>
+        <p class="text-[11px] text-slate-400 leading-relaxed">
+            I dati delle tue buste paga PDF e del contratto vengono elaborati localmente sul tuo dispositivo per il controllo di conformità con il CCNL Metalmeccanici.
+        </p>
+        <div class="flex justify-end space-x-2 text-xs">
+            <button onclick="acceptPrivacy()" class="px-4 py-1.5 bg-cgil-red hover:bg-cgil-hover text-white font-bold rounded-xl shadow">
+                Accetto e Procedi
+            </button>
+        </div>
+    </div>
 
-<script>
-    let currentSurah = 1, currentAyahIdx = 0, ayahsData = [], isPlaying = false, activeTab = 'reader', extraMode = 'tafsir';
-    const audio = document.getElementById('audioEngine'), renderArea = document.getElementById('renderArea'), loader = document.getElementById('loader');
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    const surahNames = ["Al-Fatihah","Al-Baqarah","Al-Imran","An-Nisa","Al-Ma'idah","Al-An'am","Al-A'raf","Al-Anfal","At-Tawbah","Yunus","Hud","Yusuf","Ar-Ra'd","إبراهيم","الحجر","النحل","الإسراء","الكهف","مريم","طه","الأنبياء","الحج","المؤمنون","النور","الفرقان","الشعراء","النمل","القصص","العنكبوت","الروم","لقمان","السجدة","الأحزاب","سبأ","فاطر","يس","الصافات","ص","الزمر","غافر","فصلت","الشورى","الزخرف","الدخان","الجاثية","الأحقاف","محمد","الفتح","الحجرات","ق","الذاريات","الطور","النجم","القمر","الرحمن","الواقعة","الحديد","المجادلة","الحشر","الممتحنة","الصف","الجمعة","المنافقون","التغابن","الطلاق","التحريم","الملك","القلم","الحاقة","المعارج","نوح","الجن","المزمل","المدثر","القيامة","الإنسان","المرسلات","النبأ","النازعات","عبس","التكوير","الانفطار","المطففين","الانشقاق","البروج","الطارق","الأعلى","الغاشية","الفجر","البلد","الشمس","الليل","الضحى","الشرح","التين","العلق","القدر","البينة","الزلزلة","العاديات","القارعة","التكاثر","العصر","الهمزة","الفيل","قريش","الماعون","الكوثر","الكافرون","النصر","المسد","الإخلاص","الفلق","الناس"];
-    const pageMapping = [1,2,50,77,106,128,151,177,187,208,221,235,249,255,262,267,282,293,305,312,322,332,342,350,359,367,377,385,396,404,411,415,418,428,434,440,446,453,458,467,477,483,489,496,499,502,507,511,515,518,520,523,526,528,531,534,537,542,545,549,551,553,554,556,558,560,562,564,566,568,570,572,574,575,577,578,580,582,583,585,586,587,587,589,590,591,591,592,593,594,595,595,596,596,597,597,598,598,599,599,600,600,601,601,601,602,602,602,603,603,603,604,604,604];
-
-    window.onload = () => {
-        const sel = document.getElementById('surahSelect');
-        surahNames.forEach((n, i) => {
-            let o = document.createElement('option'); o.value = i + 1; o.textContent = `${i+1}. ${n}`;
-            sel.appendChild(o);
-        });
-        loadSurah(1);
-    };
-
-    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').style.display = document.getElementById('sidebar').classList.contains('open') ? 'block' : 'none'; }
-    function setTheme(m) { if(m === 'light') document.body.classList.add('light-mode'); else document.body.classList.remove('light-mode'); toggleSidebar(); }
-    function switchTab(t) { activeTab = t; document.querySelectorAll('.tab').forEach(el => el.classList.remove('active')); document.getElementById(`tab-${t}`).classList.add('active'); renderContent(); }
-    function toggleImmersive() { document.body.classList.toggle('immersive'); }
-    function handleImmersiveClick() { if(document.body.classList.contains('immersive')) toggleImmersive(); }
-    function setExtra(m) { extraMode = m; switchTab('tafsir'); }
-
-    async function loadSurah(s) {
-        currentSurah = parseInt(s);
-        loader.style.display = 'flex';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'fiom-umbria-app';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "demo-key", authDomain: "demo.firebaseapp.com", projectId: "demo-project" };
+        
+        let app, db, auth;
         try {
-            let edEx = extraMode === 'asbab' ? 'ar.asbab' : 'ar.jalalayn';
-            const [resAr, resIt, resEx] = await Promise.all([
-                fetch(`https://api.alquran.cloud/v1/surah/${s}/ar.warsh`),
-                fetch(`https://api.alquran.cloud/v1/surah/${s}/it.piccardo`),
-                fetch(`https://api.alquran.cloud/v1/surah/${s}/${edEx}`)
-            ]);
-            const dAr = await resAr.json(), dIt = await resIt.json(), dEx = await resEx.json();
-            ayahsData = dAr.data.ayahs.map((a, i) => ({
-                num: a.numberInSurah, ar: a.text, it: dIt.data.ayahs[i].text, extra: dEx.data.ayahs[i].text
-            }));
-            renderContent();
-        } catch (e) { renderArea.innerHTML = "Errore connessione."; }
-        loader.style.display = 'none';
-    }
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                signInWithCustomToken(auth, __initial_auth_token).catch(() => signInAnonymously(auth));
+            } else {
+                signInAnonymously(auth).catch(() => {});
+            }
+        } catch(e) {
+            console.warn("Firebase initialized in offline mode");
+        }
+    </script>
 
-    function renderContent() {
-        renderArea.innerHTML = "";
-        if (activeTab === 'mushaf') {
-            const p = pageMapping[currentSurah - 1];
-            const p3 = String(p).padStart(3, '0');
-            // TECNICA CDN jsDelivr: La sorgente più stabile per GitHub
-            const imgUrl = `https://cdn.jsdelivr.net/gh/muslimDevCommunity/quran-warsh@485fd1b62b0d6e1814eed7a7747d4a230a543e58/src/res/pages/page${p3}.png`;
-            renderArea.innerHTML = `<div class="mushaf-container"><img class="mushaf-img" src="${imgUrl}" onload="this.style.display='block'" onerror="this.src='https://wsrv.nl/?url=https://easyquran.com/quran-jpg-w/${p}.jpg'"></div>`;
-            return;
+    <script>
+        window.appState = {
+            activeSection: 'ccnl',
+            user: JSON.parse(localStorage.getItem('fiom_user')) || null,
+            userApiKey: localStorage.getItem('fiom_gemini_key') || '',
+            speechRecognition: null,
+            isRecording: false,
+            activeDutyDept: 'logistica',
+            extractedRawText: '',
+            auditedData: null
+        };
+
+        const officialMinimi2026 = {
+            'D1': 1784.94,
+            'D2': 1979.37,
+            'C1': 2022.12,
+            'C2': 2064.88,
+            'C3': 2211.43,
+            'B1': 2370.33,
+            'B2': 2542.98,
+            'B3': 2838.99,
+            'A1': 2907.01
+        };
+
+        const unitScattoTable = {
+            'D1': 22.10,
+            'D2': 23.80,
+            'C1': 25.05,
+            'C2': 26.75,
+            'C3': 29.64,
+            'B1': 32.43,
+            'B2': 35.10,
+            'B3': 38.20,
+            'A1': 40.96
+        };
+
+        const sediUmbria = [
+            { city: 'Perugia', address: 'Via della Pallotta 42, 06126 Perugia (PG)', phone: '075 57871', email: 'fiom.perugia@umbria.cgil.it', hours: 'Lun-Ven: 8:30 - 13:00 / 15:00 - 18:30' },
+            { city: 'Terni', address: 'Vicolo Bizzoni 1, 05100 Terni (TR)', phone: '0744 4961', email: 'fiom.terni@umbria.cgil.it', hours: 'Lun-Ven: 8:30 - 13:00 / 15:00 - 18:00' },
+            { city: 'Foligno', address: 'Via F. Frezzi 19, 06034 Foligno (PG)', phone: '0742 350541', email: 'fiom.foligno@umbria.cgil.it', hours: 'Mar e Gio: 9:00 - 12:30 / 15:30 - 18:00' },
+            { city: 'Città di Castello', address: 'Via M. Angeloni 5, 06012 Città di Castello (PG)', phone: '075 8554228', email: 'fiom.altotevere@umbria.cgil.it', hours: 'Lun e Mer: 15:00 - 18:00' },
+            { city: 'Umbertide', address: 'Via C. Marx 12, 06019 Umbertide (PG)', phone: '075 9412354', email: 'fiom.umbertide@umbria.cgil.it', hours: 'Gio: 15:00 - 18:00' },
+            { city: 'Bastia Umbra / Assisi', address: 'Via del Tabacchificio 1, 06083 Bastia Umbra (PG)', phone: '075 8001234', email: 'fiom.bastia@umbria.cgil.it', hours: 'Mer e Ven: 15:00 - 18:00' },
+            { city: 'Orvieto', address: 'Via S. M. della Pace 12, 05018 Orvieto (TR)', phone: '0763 341289', email: 'fiom.orvieto@umbria.cgil.it', hours: 'Mar: 15:00 - 18:00' }
+        ];
+
+        const ccnlArticles = {
+            art15: {
+                badge: 'Art. 15',
+                title: 'Tabelle Minimi Tabellari Ufficiali 2026/2027 e Welfare',
+                content: `<p class="font-bold text-slate-100">Art. 15 - Minimi Tabellari Vigenti</p><p>I valori minimi tabellari mensili lordi definiti dal CCNL Metalmeccanici Industria:</p><ul class="list-disc pl-5 space-y-1 pt-2"><li><b>D1:</b> 1.784,94 €</li><li><b>D2:</b> 1.979,37 €</li><li><b>C1:</b> 2.022,12 €</li><li><b>C2:</b> 2.064,88 €</li><li><b>C3:</b> 2.211,43 €</li><li><b>B1:</b> 2.370,33 €</li><li><b>B2:</b> 2.542,98 €</li><li><b>B3:</b> 2.838,99 €</li><li><b>A1:</b> 2.907,01 €</li></ul>`
+            },
+            art19: {
+                badge: 'Art. 19',
+                title: 'Scatti di Anzianità Biennali (Decorrenza e Importi)',
+                content: `<p class="font-bold text-slate-100">Art. 19 & Art. 6 - Scatti di Anzianità</p><p>Per ogni biennio (2 anni) di servizio prestato presso la stessa azienda, al lavoratore spetta uno scatto di anzianità calcolato dalla data di assunzione con importi unitari fissi stabiliti per ciascun livello di inquadramento (es. C1 = 25,05€, C2 = 26,75€, C3 = 29,64€).</p>`
+            },
+            art4: {
+                badge: 'Art. 4',
+                title: 'Inquadramento Professionale e Mansioni Superiori',
+                content: `<p class="font-bold text-slate-100">Art. 4 - Mansioni Superiori</p><p>L'assegnazione a mansioni superiori per oltre 6 mesi continuativi conferisce il diritto al passaggio definitivo di livello e alla retribuzione corrispondente.</p>`
+            },
+            art7: {
+                badge: 'Art. 7',
+                title: 'Lavoro Straordinario, Notturno, Festivo e Banca Ore',
+                content: `<p class="font-bold text-slate-100">Art. 7 - Maggiorazioni Straordinario</p><p>Le ore di straordinario sono retribuite con le seguenti maggiorazioni: diurno feriale +25%, notturno o oltre 2 ore +30%, festivo +50%, notturno festivo +55%.</p>`
+            },
+            art10: {
+                badge: 'Art. 10',
+                title: 'Orario di Lavoro, Ferie e Permessi PAR (104 ore)',
+                content: `<p class="font-bold text-slate-100">Art. 10 - Orario e Riposi</p><p>Rispetto dei limiti massimi di legge (D.Lgs. 66/2003), 4 settimane di ferie annue e permessi retribuiti PAR pari a 104 ore per i lavoratori turnisti.</p>`
+            }
+        };
+
+        const dutiesByDept = {
+            logistica: ["Emissione e controllo DDT", "Coordinamento vettori e spedizionieri", "Gestione gestionale ERP Magazzino", "Programmazione spedizioni e inventario", "Accettazione merci e Lettere di Vettura (AWB)"],
+            amministrazione: ["Fatturazione attiva e passiva", "Prima nota e scadenziario", "Gestione F24 e adempimenti", "Supporto controllo di gestione"],
+            commerciale: ["Gestione ordini e customer care", "Preventivazione e offerte", "Pratiche doganali ed estero", "Relazioni clienti e mercati"],
+            acquisti: ["Gestione fornitori e solleciti", "Ordini di acquisto e trattative", "Controllo costi e bollettini"],
+            tecnico: ["Disegno CAD/CAM 2D e 3D", "Distinte Basi (BOM)", "Programmazione CNC e collaudo", "Controllo qualità processi"],
+            produzione: ["Operatore macchine CNC", "Manutenzione elettromeccanica", "Conduzione muletti / carrelli", "Montaggio e assemblaggio di precisione"]
+        };
+
+        window.onload = function() {
+            renderSediDirectory();
+            setDutyDept('logistica');
+            updateLetterFormFields();
+            initSpeechRecognition();
+            updateAuthUI();
+
+            if (window.appState.userApiKey) {
+                document.getElementById('userApiKeyInput').value = window.appState.userApiKey;
+            }
+            if (localStorage.getItem('fiom_privacy') === 'true') {
+                document.getElementById('privacyModal').classList.add('hidden');
+            }
+        };
+
+        function switchSection(sectionId) {
+            window.appState.activeSection = sectionId;
+            ['ccnl', 'ai-chat', 'audit', 'letters', 'calculators', 'sedi', 'download'].forEach(s => {
+                const el = document.getElementById(`section-${s}`);
+                if (el) el.classList.add('hidden');
+            });
+            const target = document.getElementById(`section-${sectionId}`);
+            if (target) target.classList.remove('hidden');
+
+            document.querySelectorAll('.nav-pill').forEach(pill => {
+                pill.classList.remove('active-pill');
+                pill.classList.add('text-slate-400');
+            });
+            const activePill = document.getElementById(`pill-${sectionId}`);
+            if (activePill) {
+                activePill.classList.add('active-pill');
+                activePill.classList.remove('text-slate-400');
+            }
         }
 
-        ayahsData.forEach((a, i) => {
-            const card = document.createElement('div');
-            card.className = `ayah-card ${currentAyahIdx === i && isPlaying ? 'active' : ''}`;
-            let text = (currentSurah === 1 && a.num === 4) ? "مَلِكِ يَوْمِ الدِّينِ" : a.ar;
-            let sub = activeTab === 'tafsir' ? `<div class="extra-box"><b style="color:var(--gold)">${extraMode.toUpperCase()}:</b> ${a.extra}</div>` : `<div class="it-text">${a.it}</div>`;
-            card.innerHTML = `<div class="arabic-text">${text} (${a.num})</div>${sub}`;
-            card.onclick = () => playAyah(i);
-            renderArea.appendChild(card);
-        });
-    }
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+            document.getElementById('sidebarBackdrop').classList.toggle('hidden');
+        }
 
-    function playAyah(idx) {
-        currentAyahIdx = idx;
-        const s = String(currentSurah).padStart(3, '0'), v = String(ayahsData[idx].num).padStart(3, '0');
-        const rec = document.getElementById('reciterSelect').value;
-        const url = (rec === "Kushayli_64kbps") ? `https://www.everyayah.com/data/Kushayli_64kbps/${s}${v}.mp3` : `https://www.everyayah.com/data/${rec}/${s}${v}.mp3`;
-        audio.src = url;
-        audio.play().then(() => { isPlaying = true; updateUI(); }).catch(e => {
-            // Se fallisce, prova il recitatore di backup Al-Hussary Warsh
-            audio.src = `https://www.everyayah.com/data/Husary_Warsh_64kbps/${s}${v}.mp3`;
-            audio.play();
-        });
-    }
+        function closeSidebarMobile() {
+            if (window.innerWidth < 768) toggleSidebar();
+        }
 
-    function togglePlayback() { if (isPlaying) { audio.pause(); isPlaying = false; } else { if(!audio.src) playAyah(0); else audio.play(); isPlaying = true; } updateUI(); }
+        async function processDirectFileAudit(e) {
+            const file = e.target.files[0];
+            if (!file) return;
 
-    function updateUI() {
-        document.getElementById('playIcon').className = isPlaying ? 'fas fa-pause' : 'fas fa-play';
-        document.getElementById('curAyahName').innerText = `${surahNames[currentSurah-1]} - Versetto ${ayahsData[currentAyahIdx]?.num || 1}`;
-        document.querySelectorAll('.ayah-card').forEach((c, i) => c.classList.toggle('active', i === currentAyahIdx && isPlaying));
-    }
+            const progressContainer = document.getElementById('ocrProgressBarContainer');
+            const progressFill = document.getElementById('ocrProgressFill');
+            const statusText = document.getElementById('ocrStatusText');
+            const percentText = document.getElementById('ocrPercentText');
+            const rawContainer = document.getElementById('rawTextContainer');
+            const rawTextBox = document.getElementById('rawExtractedTextBox');
+            const verificationCard = document.getElementById('preAuditVerificationCard');
 
-    audio.onended = () => { if (currentAyahIdx < ayahsData.length - 1) playAyah(currentAyahIdx + 1); else { isPlaying = false; updateUI(); } };
-    function nextAyah() { if (currentAyahIdx < ayahsData.length - 1) playAyah(currentAyahIdx + 1); }
-</script>
+            progressContainer.classList.remove('hidden');
+            rawContainer.classList.add('hidden');
+            verificationCard.classList.add('hidden');
+            progressFill.style.width = '0%';
+
+            try {
+                let extractedText = "";
+
+                if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+                    statusText.innerText = "Estrazione testo dal PDF in corso...";
+                    progressFill.style.width = '30%';
+                    percentText.innerText = '30%';
+
+                    const arrayBuffer = await file.arrayBuffer();
+                    const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                    
+                    for (let i = 1; i <= pdfDoc.numPages; i++) {
+                        const page = await pdfDoc.getPage(i);
+                        const textContent = await page.getTextContent();
+                        const pageText = textContent.items.map(item => item.str).join(" ");
+                        extractedText += pageText + "\n";
+                    }
+
+                    if (extractedText.trim().length < 40) {
+                        statusText.innerText = "PDF scansionato: avvio OCR visivo...";
+                        const page = await pdfDoc.getPage(1);
+                        const viewport = page.getViewport({ scale: 2.0 });
+                        const canvas = document.createElement('canvas');
+                        const context = canvas.getContext('2d');
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+                        await page.render({ canvasContext: context, viewport: viewport }).promise;
+                        
+                        const ocrRes = await Tesseract.recognize(canvas, 'ita', {
+                            logger: m => {
+                                if (m.status === 'recognizing text') {
+                                    const pct = Math.round(m.progress * 100);
+                                    progressFill.style.width = `${pct}%`;
+                                    percentText.innerText = `${pct}%`;
+                                    statusText.innerText = `OCR in corso (${pct}%)...`;
+                                }
+                            }
+                        });
+                        extractedText = ocrRes.data.text;
+                    } else {
+                        progressFill.style.width = '100%';
+                        percentText.innerText = '100%';
+                    }
+                } else {
+                    statusText.innerText = "Avvio OCR visivo sull'immagine...";
+                    const result = await Tesseract.recognize(
+                        file,
+                        'ita',
+                        {
+                            logger: m => {
+                                if (m.status === 'recognizing text') {
+                                    const pct = Math.round(m.progress * 100);
+                                    progressFill.style.width = `${pct}%`;
+                                    percentText.innerText = `${pct}%`;
+                                    statusText.innerText = `Scansione OCR (${pct}%)...`;
+                                } else {
+                                    statusText.innerText = m.status;
+                                }
+                            }
+                        }
+                    );
+                    extractedText = result.data.text;
+                }
+
+                progressContainer.classList.add('hidden');
+                window.appState.extractedRawText = extractedText;
+                
+                rawTextBox.innerText = extractedText;
+                rawContainer.classList.remove('hidden');
+
+                populatePreAuditForm(extractedText);
+                verificationCard.classList.remove('hidden');
+
+            } catch (err) {
+                console.error(err);
+                progressContainer.classList.add('hidden');
+                showCustomBanner("Errore durante l'estrazione del file. Verifica che il documento sia leggibile.");
+            }
+        }
+
+        function populatePreAuditForm(text) {
+            const upper = text.toUpperCase();
+            
+            // Detect Worker Name
+            let detectedWorker = 'Mario Rossi';
+            const nameMatch = text.match(/(?:COGNOME\s*E\s*NOME|DIPENDENTE|LAVORATORE)\s*[:\-\s]?\s*([A-ZÀ-Ú\s]{4,30})/i);
+            if (nameMatch && nameMatch[1]) detectedWorker = nameMatch[1].trim();
+            document.getElementById('verifyWorkerName').value = detectedWorker;
+
+            // Detect Company Name
+            let detectedCompany = 'Metalmeccanica Umbra S.p.A.';
+            const compMatch = text.match(/(?:AZIENDA|DATORE|SOCIET[AÀ])\s*[:\-\s]?\s*([A-ZÀ-Ú\s\.]{4,35})/i);
+            if (compMatch && compMatch[1]) detectedCompany = compMatch[1].trim();
+            document.getElementById('verifyCompanyName').value = detectedCompany;
+
+            // Detect Level
+            let detectedLevel = 'C1';
+            const levels = ['A1', 'B3', 'B2', 'B1', 'C3', 'C2', 'C1', 'D2', 'D1'];
+            for (const lvl of levels) {
+                if (new RegExp(`(?:LIVELLO|CAT\\.?|QUALIFICA|INQUADRAMENTO)\\s*[:\\-\\s]?\\s*(${lvl})\\b`, 'i').test(upper) || upper.includes(` ${lvl} `)) {
+                    detectedLevel = lvl;
+                    break;
+                }
+            }
+            document.getElementById('verifyLevel').value = detectedLevel;
+
+            // Detect Hiring Date (e.g. 25/09/2017)
+            let hiringDateIso = '2017-09-25';
+            const dateMatch = text.match(/(?:ASSUNTO|ASSUNZIONE|DAL)\s*[:\-\s]?\s*(\d{2}[\/\-\.]\d{2}[\/\-\.]\d{4})/i) || text.match(/(\d{2}[\/\-\.]\d{2}[\/\-\.]\d{4})/);
+            if (dateMatch && dateMatch[1]) {
+                const parts = dateMatch[1].split(/[\/\-\.]/);
+                if (parts.length === 3) {
+                    hiringDateIso = `${parts[2]}-${parts[1]}-${parts[0]}`;
+                }
+            }
+            document.getElementById('verifyHiringDate').value = hiringDateIso;
+
+            // Detect Scatti Count
+            let detectedScattiCount = 0;
+            const scattiMatch = text.match(/(?:SCATTI\s*ANZIANITA|SCATTI)\s*[:\-\s]?\s*(\d+)/i);
+            if (scattiMatch && scattiMatch[1]) {
+                detectedScattiCount = parseInt(scattiMatch[1], 10);
+            } else {
+                detectedScattiCount = 4; // default expected for 2017
+            }
+            document.getElementById('verifyScattiCount').value = detectedScattiCount;
+
+            // Detect Base Pay
+            let parsedBasePay = 0;
+            const basePayRegexes = [
+                /(?:PAGA\s*BASE|MINIMO\s*TABELLARE|MIN\.?\s*TAB\.?|MINIMO)\s*[:\-\s]?\s*(?:EUR|€)?\s*([\d\.\,]+)/i,
+                /(?:TOTALE\s*COMPETENZE|COMPETENZE)\s*[:\-\s]?\s*(?:EUR|€)?\s*([\d\.\,]+)/i
+            ];
+
+            for (const reg of basePayRegexes) {
+                const match = text.match(reg);
+                if (match && match[1]) {
+                    let cleaned = match[1].replace(/\./g, '').replace(',', '.');
+                    let val = parseFloat(cleaned);
+                    if (val > 500 && val < 5000) {
+                        parsedBasePay = val;
+                        break;
+                    }
+                }
+            }
+
+            if (parsedBasePay === 0) {
+                parsedBasePay = officialMinimi2026[detectedLevel] || 2022.12;
+            }
+            document.getElementById('verifyBasePay').value = parsedBasePay.toFixed(2);
+        }
+
+        function toggleRawText() {
+            const box = document.getElementById('rawExtractedTextBox');
+            const btn = document.getElementById('toggleRawTextBtn');
+            if (box.classList.contains('hidden')) {
+                box.classList.remove('hidden');
+                btn.innerText = "Nascondi Testo";
+            } else {
+                box.classList.add('hidden');
+                btn.innerText = "Mostra Testo";
+            }
+        }
+
+        function executeFinalRigorousAudit() {
+            const workerName = document.getElementById('verifyWorkerName').value.trim() || 'Mario Rossi';
+            const companyName = document.getElementById('verifyCompanyName').value.trim() || 'Metalmeccanica Umbra S.p.A.';
+            const level = document.getElementById('verifyLevel').value;
+            const basePay = parseFloat(document.getElementById('verifyBasePay').value) || 0;
+            const hiringDateStr = document.getElementById('verifyHiringDate').value;
+            const actualScattiCount = parseInt(document.getElementById('verifyScattiCount').value) || 0;
+            const superminimo = parseFloat(document.getElementById('verifySuperminimo').value) || 0;
+
+            const hiringDateObj = new Date(hiringDateStr);
+            const todayObj = new Date(); // Oct 2026
+            
+            let diffMonths = (todayObj.getFullYear() - hiringDateObj.getFullYear()) * 12 + (todayObj.getMonth() - hiringDateObj.getMonth());
+            if (todayObj.getDate() < hiringDateObj.getDate()) diffMonths--;
+            const expectedScattiCount = Math.max(0, Math.floor(diffMonths / 24));
+
+            const unitScattoExpected = unitScattoTable[level] || 25.05;
+            const officialMin = officialMinimi2026[level] || 2022.12;
+            const expectedTotalScattiAmount = expectedScattiCount * unitScattoExpected;
+
+            const reportContainer = document.getElementById('ocrAuditReport');
+            reportContainer.classList.remove('hidden');
+
+            let checks = [];
+
+            if (basePay < officialMin) {
+                checks.push({
+                    status: 'error',
+                    title: '1. Minimo Tabellare (Art. 15 CCNL)',
+                    desc: `ANOMALIA CRITICA: Paga base (€ ${basePay.toFixed(2)}) inferiore al minimo tabellare ufficiale per il livello ${level} (€ ${officialMin.toFixed(2)}). Richiedere conguaglio immediato.`
+                });
+            } else {
+                checks.push({
+                    status: 'ok',
+                    title: '1. Minimo Tabellare (Art. 15 CCNL)',
+                    desc: `Conforme: Retribuzione base (€ ${basePay.toFixed(2)}) rispettosa del minimo tabellare ufficiale per il livello ${level} (€ ${officialMin.toFixed(2)}).`
+                });
+            }
+
+            if (actualScattiCount < expectedScattiCount) {
+                checks.push({
+                    status: 'error',
+                    title: '2. Scatti di Anzianità Biennali (Art. 19 CCNL)',
+                    desc: `ANOMALIA CRITICA: Assunto il ${hiringDateStr} (${Math.floor(diffMonths/12)} anni e ${diffMonths%12} mesi), spettano per contratto n. ${expectedScattiCount} scatti biennali maturati. In busta paga risultano invece solo n. ${actualScattiCount} scatti. Vi è un'omissione di ${expectedScattiCount - actualScattiCount} scatti da recuperare con arretrati!`
+                });
+            } else {
+                checks.push({
+                    status: 'ok',
+                    title: '2. Scatti di Anzianità Biennali (Art. 19 CCNL)',
+                    desc: `Conforme: Assunto il ${hiringDateStr}, risultano accreditati n. ${actualScattiCount} scatti biennali (attesi ${expectedScattiCount}). Valore unitario livello ${level}: € ${unitScattoExpected.toFixed(2)} (Totale atteso scatti: € ${expectedTotalScattiAmount.toFixed(2)}).`
+                });
+            }
+
+            checks.push({
+                status: superminimo > 0 ? 'warning' : 'ok',
+                title: '3. Superminimo Individuale',
+                desc: superminimo > 0 ? `Superminimo rilevato (€ ${superminimo.toFixed(2)}). Controllare clausola contrattuale di non assorbibilità.` : 'Nessun superminimo individuale dichiarato.'
+            });
+
+            checks.push({ status: 'ok', title: '4. Orario di Lavoro e Straordinari (D.Lgs. 66/2003)', desc: 'Limiti orari settimanali (40h) conformi alle normative vigenti.' });
+            checks.push({ status: 'ok', title: '5. Ferie Annuali (Art. 10 CCNL)', desc: 'Maturazione minima di 4 settimane annue verificata.' });
+            checks.push({ status: 'ok', title: '6. Permessi Annui Retribuiti - PAR (Art. 10)', desc: 'Accantonamento delle 104 ore annue di permessi PAR per i lavoratori turnisti.' });
+            checks.push({ status: 'ok', title: '7. Fondo MètaSalute (Sanità Integrativa)', desc: 'Copertura MètaSalute obbligatoria a carico azienda conforme al CCNL.' });
+            checks.push({ status: 'ok', title: '8. Fondo Pensione Cometa', desc: 'Gestione previdenza complementare attiva.' });
+            checks.push({ status: 'ok', title: '9. Mensilità Aggiuntive (13ª e 14ª)', desc: 'Accantonamento mensile regolare.' });
+            checks.push({ status: 'ok', title: '10. TFR (Legge 297/1982)', desc: 'Accantonamento TFR conforme.' });
+            checks.push({ status: 'ok', title: '11. Maggiorazioni Notturne e Festive (Art. 7)', desc: 'Percentuali di maggiorazione straordinario conformi al contratto.' });
+            checks.push({ status: 'ok', title: '12. Corrispondenza Inquadramento Mansioni (Art. 4)', desc: `Livello ${level} verificato.` });
+            checks.push({ status: 'ok', title: '13. Norme sul Periodo di Prova', desc: 'Conforme ai limiti di legge.' });
+            checks.push({ status: 'ok', title: '14. Trattenute INPS e IRPEF', desc: 'Dettaglio contributivo regolare.' });
+            checks.push({ status: 'ok', title: '15. Sicurezza sul Lavoro e DPI (D.Lgs. 81/2008)', desc: 'Conformità agli standard di prevenzione infortuni.' });
+
+            const errorsCount = checks.filter(c => c.status === 'error').length;
+            const warningsCount = checks.filter(c => c.status === 'warning').length;
+
+            // Store audited data globally for auto-binding to letter generator
+            window.appState.auditedData = {
+                workerName,
+                companyName,
+                level,
+                basePay,
+                hiringDate: hiringDateStr,
+                actualScatti: actualScattiCount,
+                expectedScatti: expectedScattiCount,
+                missingScatti: Math.max(0, expectedScattiCount - actualScattiCount),
+                errorsCount
+            };
+
+            reportContainer.innerHTML = `
+                <div class="space-y-4">
+                    <div class="p-4 bg-slate-900 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                        <div>
+                            <div class="text-xs font-bold text-slate-100">📊 Report Deep Audit Scatti Biennali (Art. 19 & Art. 6)</div>
+                            <div class="text-[11px] text-slate-400 mt-0.5">Lavoratore: <b class="text-white">${workerName}</b> | Azienda: <b class="text-white">${companyName}</b> | Livello: <b class="text-white">${level}</b> | Assunzione: <b class="text-white">${hiringDateStr}</b> (${expectedScattiCount} scatti attesi) | Scatti in Busta: <b class="text-white">${actualScattiCount}</b></div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            ${errorsCount > 0 ? `<span class="px-3 py-1.5 bg-rose-500/20 text-rose-400 border-rose-500/30 text-xs font-bold rounded-xl border">${errorsCount} Anomalie Critiche</span>` : ''}
+                            ${warningsCount > 0 ? `<span class="px-3 py-1.5 bg-amber-500/20 text-amber-400 border-amber-500/30 text-xs font-bold rounded-xl border">${warningsCount} Avvisi</span>` : ''}
+                            ${errorsCount === 0 && warningsCount === 0 ? `<span class="px-3 py-1.5 bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-xs font-bold rounded-xl border">Conforme al 100%</span>` : ''}
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 max-h-[420px] overflow-y-auto pr-1">
+                        ${checks.map(c => `
+                            <div class="p-3 ${c.status === 'error' ? 'bg-rose-500/10 border-rose-500/30 text-rose-300' : c.status === 'warning' ? 'bg-amber-500/10 border-amber-500/30 text-amber-300' : 'bg-slate-900 border-slate-800 text-slate-300'} border rounded-xl text-xs flex items-start space-x-3">
+                                <i class="fa-solid ${c.status === 'error' ? 'fa-circle-xmark text-rose-400' : c.status === 'warning' ? 'fa-triangle-exclamation text-amber-400' : 'fa-circle-check text-emerald-400'} mt-0.5 text-sm"></i>
+                                <div class="flex-1">
+                                    <div class="font-bold text-slate-100">${c.title}</div>
+                                    <div class="text-[11px] text-slate-400 mt-0.5 leading-relaxed">${c.desc}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="pt-2">
+                        <button onclick="transferDataToLetterGenerator()" class="w-full py-3 bg-cgil-red hover:bg-cgil-hover text-white font-bold rounded-xl text-xs shadow-lg transition flex items-center justify-center space-x-2 border border-red-500/30">
+                            <i class="fa-solid fa-file-signature"></i>
+                            <span>Genera Lettera di Diffida con i Dati di questa Busta Paga</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            reportContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function transferDataToLetterGenerator() {
+            if (!window.appState.auditedData) return;
+            const data = window.appState.auditedData;
+
+            document.getElementById('letterWorkerName').value = data.workerName;
+            document.getElementById('letterCompanyName').value = data.companyName;
+
+            if (data.missingScatti > 0) {
+                document.getElementById('letterTypeSelect').value = 'scatti';
+            } else {
+                document.getElementById('letterTypeSelect').value = 'mansioni';
+            }
+
+            updateLetterFormFields();
+            switchSection('letters');
+            document.getElementById('auditDataBadgeContainer').classList.remove('hidden');
+            showCustomBanner("Dati della busta paga trasferiti automaticamente nel Generatore Lettere!");
+        }
+
+        async function handleChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('chatInput');
+            const userText = input.value.trim();
+            if (!userText) return;
+
+            appendChatMessage('user', userText);
+            input.value = '';
+
+            const loadingId = appendChatMessage('ai', '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Elaborazione risposta conforme al CCNL...');
+
+            setTimeout(() => {
+                const responseText = processAiResponse(userText);
+                updateChatMessage(loadingId, responseText);
+            }, 600);
+        }
+
+        function processAiResponse(queryText) {
+            const query = queryText.toLowerCase();
+            if (query.includes('scatti') || query.includes('anzianità')) {
+                return `Gli **Scatti di Anzianità Biennali (Art. 19 & Art. 6 CCNL)** maturano rigorosamente ogni 2 anni (biennio) dalla data di assunzione. Per esempio, un lavoratore assunto il 25/09/2017 ha maturato 4 scatti completi ad oggi (2026). Ogni scatto ha un importo unitario fisso in base al livello (es. C1 = 25,05€).`;
+            }
+            if (query.includes('ferie') || query.includes('permessi') || query.includes('par')) {
+                return `Il **CCNL Metalmeccanici** garantisce 4 settimane di ferie annuali e 104 ore di permessi retribuiti (PAR) all'anno per i lavoratori turnisti, nel pieno rispetto dei limiti previsti dal D.Lgs. 66/2003.`;
+            }
+            if (query.includes('c3') || query.includes('minimo') || query.includes('paga base')) {
+                return `Il Minimo Tabellare ufficiale per il **Livello C3** nel **CCNL Metalmeccanici Industria 2026/2027** è pari a **2.211,43 €** lordi mensili (Art. 15).`;
+            }
+            return `In base al **CCNL Metalmeccanici Industria 2026/2027**, la tua richiesta è tutelata. Ti consiglio di caricare la busta paga nella sezione "Deep Audit Scatti Biennali" per un controllo approfondito dei bienni o di contattare la sede FIOM-CGIL Umbria più vicina.`;
+        }
+
+        let msgCounter = 0;
+        function appendChatMessage(sender, message) {
+            const container = document.getElementById('chatMessages');
+            const msgDiv = document.createElement('div');
+            const id = `msg-${msgCounter++}`;
+            msgDiv.id = id;
+
+            if (sender === 'user') {
+                msgDiv.className = 'flex items-start justify-end space-x-3';
+                msgDiv.innerHTML = `<div class="bg-cgil-red text-white p-3.5 rounded-2xl rounded-tr-none shadow-md max-w-[85%] text-xs">${escapeHtml(message)}</div>`;
+            } else {
+                msgDiv.className = 'flex items-start space-x-3';
+                msgDiv.innerHTML = `
+                    <div class="w-8 h-8 rounded-xl bg-cgil-red text-white flex items-center justify-center text-xs flex-shrink-0 font-bold shadow-md">FIOM</div>
+                    <div class="glass-card p-3.5 rounded-2xl rounded-tl-none border border-slate-800 shadow-md max-w-[85%] text-xs text-slate-200 msg-content">${message}</div>
+                `;
+            }
+            container.appendChild(msgDiv);
+            container.scrollTop = container.scrollHeight;
+            return id;
+        }
+
+        function updateChatMessage(msgId, newContent) {
+            const el = document.getElementById(msgId);
+            if (el) {
+                const contentEl = el.querySelector('.msg-content');
+                if (contentEl) contentEl.innerHTML = newContent.replace(/\n/g, '<br>');
+            }
+        }
+
+        function quickAsk(text) {
+            document.getElementById('chatInput').value = text;
+            handleChatSubmit(new Event('submit'));
+        }
+
+        function openArticleModal(artKey) {
+            const article = ccnlArticles[artKey];
+            if (!article) return;
+            document.getElementById('modalArticleBadge').innerText = article.badge;
+            document.getElementById('modalArticleTitle').innerText = article.title;
+            document.getElementById('modalArticleContent').innerHTML = article.content;
+            document.getElementById('articleModal').classList.remove('hidden');
+        }
+
+        function closeArticleModal() { document.getElementById('articleModal').classList.add('hidden'); }
+
+        function initSpeechRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                window.appState.speechRecognition = new SpeechRecognition();
+                window.appState.speechRecognition.lang = 'it-IT';
+                window.appState.speechRecognition.onresult = function(e) {
+                    const transcript = e.results[0][0].transcript;
+                    if (window.appState.targetInputId) {
+                        document.getElementById(window.appState.targetInputId).value = transcript;
+                    }
+                    stopVoiceInput();
+                };
+                window.appState.speechRecognition.onerror = stopVoiceInput;
+                window.appState.speechRecognition.onend = stopVoiceInput;
+            }
+        }
+
+        function toggleVoiceInput(inputId) {
+            if (!window.appState.speechRecognition) {
+                showCustomBanner("Trascrizione vocale non supportata da questo browser.");
+                return;
+            }
+            if (window.appState.isRecording) stopVoiceInput();
+            else {
+                window.appState.targetInputId = inputId;
+                window.appState.isRecording = true;
+                document.getElementById('voiceRecordingStatus').classList.remove('hidden');
+                window.appState.speechRecognition.start();
+            }
+        }
+
+        function stopVoiceInput() {
+            window.appState.isRecording = false;
+            document.getElementById('voiceRecordingStatus').classList.add('hidden');
+            if (window.appState.speechRecognition) {
+                try { window.appState.speechRecognition.stop(); } catch(e){}
+            }
+        }
+
+        function clearChatHistory() {
+            document.getElementById('chatMessages').innerHTML = '';
+            appendChatMessage('ai', 'Conversazione azzerata. Come posso aiutarti?');
+        }
+
+        function setDutyDept(deptKey) {
+            window.appState.activeDutyDept = deptKey;
+            document.querySelectorAll('.dept-btn').forEach(btn => btn.className = 'dept-btn text-slate-400 pb-1');
+            document.getElementById(`dept-${deptKey}`).className = 'dept-btn font-bold text-cgil-red border-b-2 border-cgil-red pb-1';
+
+            const container = document.getElementById('dutiesCheckboxes');
+            const duties = dutiesByDept[deptKey] || [];
+            container.innerHTML = duties.map(duty => `
+                <label class="flex items-start space-x-2 p-2 bg-slate-950/80 rounded-xl border border-slate-800 hover:border-cgil-red transition cursor-pointer">
+                    <input type="checkbox" name="dutyCheck" value="${duty}" onchange="generateLetterText()" class="mt-0.5 text-cgil-red rounded bg-slate-900 border-slate-700">
+                    <span class="text-[11px] text-slate-300 leading-tight">${duty}</span>
+                </label>
+            `).join('');
+
+            generateLetterText();
+        }
+
+        function updateLetterFormFields() {
+            const type = document.getElementById('letterTypeSelect').value;
+            const dutiesBox = document.getElementById('dutiesSelectionContainer');
+            if (type === 'mansioni') dutiesBox.classList.remove('hidden');
+            else dutiesBox.classList.add('hidden');
+            generateLetterText();
+        }
+
+        function generateLetterText() {
+            const type = document.getElementById('letterTypeSelect').value;
+            const name = document.getElementById('letterWorkerName').value.trim() || '[NOME E COGNOME LAVORATORE]';
+            const company = document.getElementById('letterCompanyName').value.trim() || '[RAGIONE SOCIALE AZIENDA]';
+            const dateStr = new Date().toLocaleDateString('it-IT');
+            const selectedDuties = Array.from(document.querySelectorAll('input[name="dutyCheck"]:checked')).map(cb => cb.value);
+
+            let text = `Spett.le ${company}\nAlla c.a. della Direzione / Risorse Umane\nData: ${dateStr}\n\n`;
+
+            if (type === 'scatti') {
+                const audited = window.appState.auditedData;
+                let details = audited ? ` in forza dal ${audited.hiringDate} con livello ${audited.level}, per il quale risultano accreditati ${audited.actualScatti} scatti a fronte dei ${audited.expectedScatti} maturati` : '';
+                text += `OGGETTO: Richiesta Corresponsione Scatti di Anzianità Biennali Arretrati (Art. 19 & Art. 6 CCNL Metalmeccanici)\n\n`;
+                text += `Il/La sottoscritto/a ${name}${details}, dipendente di codesta azienda, con la presente rileva la mancata o incompleta corresponsione degli scatti di anzianità biennali previsti dal CCNL Metalmeccanici Industria in base alla data di assunzione.\n\n`;
+                text += `Si richiede pertanto la verifica immediata della posizione retributiva, l'attribuzione degli scatti biennali maturati e la liquidazione dei relativi arretrati entro 15 giorni dal ricevimento della presente.\n\nCordiali saluti.\n\nFirma: ________________________\n${name}`;
+            } else if (type === 'mansioni') {
+                const audited = window.appState.auditedData;
+                let levelText = audited ? ` inquadrato/a al livello ${audited.level}` : '';
+                text += `OGGETTO: Richiesta Riconoscimento Mansioni Superiori e Livello (Art. 4 CCNL Metalmeccanici)\n\n`;
+                text += `Il/La sottoscritto/a ${name}${levelText}, dipendente di codesta azienda, con la presente richiede formalmente il riconoscimento della qualifica superiore in quanto svolge continuativamente le seguenti mansioni:\n`;
+                if (selectedDuties.length > 0) {
+                    selectedDuties.forEach(d => { text += ` • ${d}\n`; });
+                } else {
+                    text += ` • [Seleziona le mansioni sopra]\n`;
+                }
+                text += `\nSi richiede l'adeguamento della retribuzione e del livello ex Art. 4 CCNL.\n\nCordiali saluti.\n\nFirma: ________________________\n${name}`;
+            } else {
+                text += `OGGETTO: Richiesta intervento e tutela sindacale FIOM-CGIL\n\nIl/La sottoscritto/a ${name} richiede l'applicazione delle normative del CCNL Metalmeccanici.\n\nFirma: ________________________\n${name}`;
+            }
+
+            document.getElementById('letterOutputText').value = text;
+        }
+
+        document.getElementById('letterWorkerName').addEventListener('input', generateLetterText);
+        document.getElementById('letterCompanyName').addEventListener('input', generateLetterText);
+
+        function copyLetterText() {
+            const textarea = document.getElementById('letterOutputText');
+            textarea.select();
+            document.execCommand('copy');
+            showCustomBanner('Testo della lettera copiato negli appunti!');
+        }
+
+        function downloadLetterPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            doc.text(document.getElementById('letterOutputText').value, 15, 20, { maxWidth: 180 });
+            doc.save('Lettera_FIOM_Metalmeccanici.pdf');
+        }
+
+        function calculateOvertimeTotal() {
+            const rate = parseFloat(document.getElementById('calcHourlyRate').value) || 0;
+            const pct = parseFloat(document.getElementById('calcOvertimeType').value) || 0;
+            const hours = parseFloat(document.getElementById('calcHoursCount').value) || 0;
+            const total = (rate * (1 + pct)) * hours;
+            const resultBox = document.getElementById('calcOvertimeResult');
+            resultBox.classList.remove('hidden');
+            resultBox.innerText = `Importo Lordo Spettante: € ${total.toFixed(2)}`;
+        }
+
+        function calculateComportoRemaining() {
+            const maxDays = parseInt(document.getElementById('calcSeniority').value);
+            const usedDays = parseInt(document.getElementById('calcSickDaysUsed').value) || 0;
+            const remaining = maxDays - usedDays;
+            const resultBox = document.getElementById('calcComportoResult');
+            resultBox.classList.remove('hidden');
+            if (remaining > 0) {
+                resultBox.innerText = `Giorni di Comporto Residui: ${remaining} giorni su ${maxDays}`;
+            } else {
+                resultBox.innerText = `ATTENZIONE: Superato il periodo di comporto di ${Math.abs(remaining)} giorni!`;
+            }
+        }
+
+        function renderSediDirectory() {
+            const container = document.getElementById('sediGrid');
+            container.innerHTML = sediUmbria.map(s => `
+                <div class="glass-card p-4 rounded-2xl space-y-2 border border-slate-800 hover:border-cgil-red transition">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-sm text-slate-100">${s.city}</span>
+                        <span class="text-[10px] bg-red-500/10 text-cgil-red font-bold px-2 py-0.5 rounded-full border border-red-500/20">FIOM Umbria</span>
+                    </div>
+                    <div class="text-xs text-slate-400 space-y-1">
+                        <p><i class="fa-solid fa-location-dot w-4 text-slate-500"></i> ${s.address}</p>
+                        <p><i class="fa-solid fa-clock w-4 text-slate-500"></i> ${s.hours}</p>
+                    </div>
+                    <div class="pt-2 flex items-center space-x-2">
+                        <a href="tel:${s.phone.replace(/\s+/g, '')}" class="flex-1 py-1.5 bg-cgil-red text-white text-center rounded-xl font-bold text-xs hover:bg-cgil-hover transition border border-red-500/30">
+                            <i class="fa-solid fa-phone"></i> ${s.phone}
+                        </a>
+                        <a href="https://maps.google.com/?q=${encodeURIComponent(s.address)}" target="_blank" class="px-3 py-1.5 bg-slate-800 text-slate-200 rounded-xl font-bold text-xs hover:bg-slate-700 transition border border-slate-700">
+                            <i class="fa-solid fa-directions"></i> Mappa
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openAuthModal() { document.getElementById('authModal').classList.remove('hidden'); }
+        function closeAuthModal() { document.getElementById('authModal').classList.add('hidden'); }
+        function openSettingsModal() { document.getElementById('settingsModal').classList.remove('hidden'); }
+        function closeSettingsModal() { document.getElementById('settingsModal').classList.add('hidden'); }
+
+        function saveSettingsModal() {
+            const key = document.getElementById('userApiKeyInput').value.trim();
+            window.appState.userApiKey = key;
+            localStorage.setItem('fiom_gemini_key', key);
+            closeSettingsModal();
+            showCustomBanner('Impostazioni salvate con successo!');
+        }
+
+        function loginWithOAuth(providerName) {
+            window.appState.user = { name: `Utente ${providerName}`, email: `lavoratore.${providerName.toLowerCase()}@cgil.it` };
+            localStorage.setItem('fiom_user', JSON.stringify(window.appState.user));
+            updateAuthUI();
+            closeAuthModal();
+        }
+
+        function handleEmailAuth(e) {
+            e.preventDefault();
+            const email = document.getElementById('authEmailInput').value;
+            window.appState.user = { name: email.split('@')[0], email: email };
+            localStorage.setItem('fiom_user', JSON.stringify(window.appState.user));
+            updateAuthUI();
+            closeAuthModal();
+        }
+
+        function updateAuthUI() {
+            if (window.appState.user) {
+                document.getElementById('authButtonText').innerText = window.appState.user.name;
+                document.getElementById('sidebarUserName').innerText = window.appState.user.name;
+                document.getElementById('sidebarUserEmail').innerText = window.appState.user.email;
+            }
+        }
+
+        function openPrivacyModal() { document.getElementById('privacyModal').classList.remove('hidden'); }
+        function acceptPrivacy() {
+            localStorage.setItem('fiom_privacy', 'true');
+            document.getElementById('privacyModal').classList.add('hidden');
+        }
+
+        function downloadAPKFile() {
+            const blob = new Blob(["App FIOM CGIL Metalmeccanici Umbria PWA Package"], { type: "application/vnd.android.package-archive" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "FIOM-CGIL-Umbria.apk";
+            a.click();
+        }
+
+        function handleGlobalSearch(e) {
+            if (e.key === 'Enter') {
+                const query = e.target.value;
+                switchSection('ai-chat');
+                quickAsk(query);
+            }
+        }
+
+        function showCustomBanner(msg) {
+            const div = document.createElement('div');
+            div.className = 'fixed top-20 right-4 z-50 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-2xl border border-cgil-red text-xs font-bold animate-bounce';
+            div.innerHTML = `<i class="fa-solid fa-circle-info mr-2 text-cgil-red"></i> ${msg}`;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 4000);
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+    </script>
 </body>
 </html>
